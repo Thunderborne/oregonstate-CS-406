@@ -14,3 +14,8 @@ Alfred Nguyen
 CS 406
 
 ### Change Log
+
+Version 0.0 - 04.29.2004 - Initial file structure of program uploaded 
+
+### Program Structure
+
