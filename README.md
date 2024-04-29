@@ -18,4 +18,17 @@ CS 406
 Version 0.0 - 04.29.2004 - Initial file structure of program uploaded 
 
 ### Program Structure
+-------------------------------------------------------------------------------------------------------
+arcanepunk.py          |    Main infinite loop runs and writes a data request to data_check.txt
+-------------------------------------------------------------------------------------------------------
+data_check.txt         |    A request is written on file, waiting for a microservice to read it and 
+                       |    respond
+-------------------------------------------------------------------------------------------------------
+arcanepunk_data.py     |    Microservice arcanepunk_data.py reads data_check.txt. Retrieves the data
+                       |    from a dictionary. Writes the data in checker.txt.
+-------------------------------------------------------------------------------------------------------
+checker.txt            |    Data from arcanepunk_data.py is written in this text file, awaiting the 
+                       |    main function in arcanepunk.py to read it
+-------------------------------------------------------------------------------------------------------
+
 
