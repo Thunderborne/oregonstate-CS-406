@@ -25,3 +25,5 @@ Version 0.0 - 04.29.2004 - Initial file structure of program uploaded
 | arcanepunk_data.py     | Microservice arcanepunk_data.py reads data_check.txt. Retrieves the data from a dictionary. Writes the data in checker.txt. |
 | checker.txt     | Data from arcanepunk_data.py is written in this text file, awaiting the main function in arcanepunk.py to read it |
 
+### UML for Arcane Punk
+![arcanepunk_uml](https://github.com/Thunderborne/oregonstate-CS-406/assets/86179332/c1bfc599-2603-41b6-97e2-df70767b5714)
