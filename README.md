@@ -27,3 +27,9 @@ Version 0.0 - 04.29.2004 - Initial file structure of program uploaded
 
 ### UML for Arcane Punk
 ![arcanepunk_uml](https://github.com/Thunderborne/oregonstate-CS-406/assets/86179332/c1bfc599-2603-41b6-97e2-df70767b5714)
+
+### Expected Dependencies
+| Dependency | Description                                                         |
+|------------|---------------------------------------------------------------------|
+| time       | This method will be used to delay read/write to the communication pipe |
+| random     | Random will allow program to roll a dice                            |
