@@ -23,7 +23,7 @@ selection_error = "Please select a number corresponding to the option."
 # Help Menus
 class_help_menu = """
 1. Hunter - A hunter starts with +2 Attack and +20 Health
-2. Operative - An operative has +3 to all sneak/evasive options
+2. Operative - An operative has +2 to all sneak/evasive options
 3. Arcanist - An arcanist has +2 to all spell casting
 """
 
@@ -72,9 +72,10 @@ while True:
 
     # Level One switch based on user selection
     def level_one_cases(user_selection, enemy1_health):
+        # User selects Attack
         if user_selection == 1:
             print(user_stats['char_name'] + " attacks the Dragon!")
-            attack_value = random.randint(0, 10)
+            attack_value = random.randint(0, 20)
             if attack_value == 0:
                 print(user_stats['char_name'] + " misses!")
             else:
@@ -88,9 +89,35 @@ while True:
             enemy_attack_value = random.randint(0, 10)
             enemy_attack_txt = f" takes {enemy_attack_value} damage."
             print(user_stats['char_name'] + enemy_attack_txt)
+            user_stats['char_health'] -= enemy_attack_value
             return enemy1_health
+        # User selects Run
         elif user_selection == 2:
-            print(user_stats['char_name'])
+            print(user_stats['char_name'] + " attempts to run away.")
+            run_attempt_value = random.randint(0, 20)
+            run_attempt_value += user_stats['char_evade']
+            if run_attempt_value >= 18:
+                print(user_stats['char_name'] + " has successfully escaped the Dragon!")
+                enemy1_health = 0
+                return enemy1_health
+            print(user_stats['char_name'] + " fails to flee the Dragon.")
+            print(user_stats['char_name'] + " is vulnerable from exhaustion.")
+            enemy_attack_value = random.randint(0, 10)
+            enemy_attack_txt = f" takes {enemy_attack_value} damage."
+            print(user_stats['char_name'] + enemy_attack_txt)
+            user_stats['char_health'] -= enemy_attack_value
+            return enemy1_health
+        # User selects Magic
+        elif user_selection == 3:
+            return enemy1_health
+        elif user_selection == 4:
+            return enemy1_health
+        elif user_selection == 5:
+            return enemy1_health
+        else:
+            print("Please enter the appropriate number corresponding to the options.")
+            return enemy1_health
+
 
 
     # Begin Game Loop
@@ -171,6 +198,7 @@ while True:
             print(selection_error)
             continue
         #else:
+        # Call the level one switch function in a loop here. It terminates when the enemy health is 0
         #elif level_one_win == 1:
             #level_one_loop = False
 
