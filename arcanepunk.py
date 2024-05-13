@@ -7,6 +7,8 @@
 # houses the infinite loop that runs the main program.
 
 # Import functions
+import time
+import random
 
 # Ascii Art
 
@@ -16,30 +18,14 @@ goodbye_text = "Goodbye! Thank you for playing."
 # Error Messages
 name_error = "Name must be between 1-20 characters."
 class_select_error = "Please enter a number corresponding to the three classes."
+selection_error = "Please select a number corresponding to the option."
 
 # Help Menus
 class_help_menu = """
 1. Hunter - A hunter starts with +2 Attack and +20 Health
-2. Operative - An operative has +2 to all evasive options
+2. Operative - An operative has +3 to all sneak/evasive options
 3. Arcanist - An arcanist has +2 to all spell casting
 """
-
-# Initial Options
-# Level One
-lvl_one_option1 = """
-1. Attack
-2. Run
-3. Use offensive magic
-4. Sneak closer
-"""
-
-lvl_one_option2 = """
-1. Attack
-2. Escape
-3. Use healing magic
-4. 
-"""
-
 
 # Main Loop
 while True:
@@ -62,9 +48,10 @@ while True:
         'char_classname': "",
         'char_class': 0,
         'char_health': 100,
-        'char_attack': 10,
+        'char_attack': 0,
         'char_evade': 0,
-        'char_magic': 0}
+        'char_magic': 0
+    }
 
     # Store options
     option_stats = {
@@ -75,6 +62,39 @@ while True:
         'talk': 1
     }
 
+    # Level One Data
+    # -------------------------------------------------------------
+
+    # Counters for Level One
+    level_one_turns = 0
+    level_one_win = 0
+    enemy1_health = 100
+
+    # Level One switch based on user selection
+    def level_one_cases(user_selection, enemy1_health):
+        if user_selection == 1:
+            print(user_stats['char_name'] + " attacks the Dragon!")
+            attack_value = random.randint(0, 10)
+            if attack_value == 0:
+                print(user_stats['char_name'] + " misses!")
+            else:
+                attack_value += user_stats['char_attack']
+                attack_txt = f" attacks the Dragon for {attack_value}!"
+                print(user_stats['char_name'] + attack_txt)
+            enemy1_health -= attack_value
+            if enemy1_health < 0:
+                return enemy1_health
+            print("The Dragon seethes with rage and attacks " + user_stats['char_name'] +"!")
+            enemy_attack_value = random.randint(0, 10)
+            enemy_attack_txt = f" takes {enemy_attack_value} damage."
+            print(user_stats['char_name'] + enemy_attack_txt)
+            return enemy1_health
+        elif user_selection == 2:
+            print(user_stats['char_name'])
+
+
+    # Begin Game Loop
+    # -------------------------------------------------------------
 
     # Prompts username
     while name_loop is True:
@@ -115,7 +135,7 @@ while True:
             if user_stats['char_class'] == 1:
                 user_stats['char_classname'] = "Hunter"
                 user_stats['char_health'] = 120
-                user_stats['char_attack'] = 12
+                user_stats['char_attack'] = 2
             if user_stats['char_class'] == 2:
                 user_stats['char_classname'] = "Operative"
                 user_stats['char_evade'] = 2
@@ -132,22 +152,27 @@ while True:
     TODO: Fill in the story scenario in UI phase
     TODO: Call the pipe for stats and dice roll
     """
-    level_one_turns = 0
-    level_one_win = 0
     while level_one_loop is True:
         print("Scenario 1: You see a dragon. \n")
         print("What do you do? \n")
         lvl_one_select = input("1. Attack \n"
-                               "2. Run \n"
+                               "2. Run (must roll 18+) \n"
                                "3. Use offensive magic \n"
-                               "4. Sneak closer \n" +
+                               "4. Sneak attack (must roll 10+) \n"
+                               "5. Talk to the dragon (must roll 18+) \n" +
                                user_stats['char_name'] + " selects: ")
-        if lvl_one_select.upper() == "QUIT" or player_class_selection.upper() == "EXIT":
+        if lvl_one_select.upper() == "QUIT" or lvl_one_select.upper() == "EXIT":
             print(goodbye_text)
             quit()
-
-        elif level_one_win == 1:
-            level_one_loop = False
+        elif lvl_one_select.isnumeric() is False:
+            print(selection_error)
+            continue
+        elif int(lvl_one_select) < 1 or int(lvl_one_select) > 5:
+            print(selection_error)
+            continue
+        #else:
+        #elif level_one_win == 1:
+            #level_one_loop = False
 
 
 
