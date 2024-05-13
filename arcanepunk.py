@@ -72,6 +72,13 @@ while True:
 
     # Level One switch based on user selection
     def level_one_cases(user_selection, enemy1_health):
+        """
+        Function acts a switch statement for the level one encounter. This function
+        is called in a loop, which terminates when enemy1_health reaches below 1.
+        :param user_selection: User choice
+        :param enemy1_health: value of current Dragon's health
+        :return: enemy1_health
+        """
         # User selects Attack
         if user_selection == 1:
             print(user_stats['char_name'] + " attacks the Dragon!")
