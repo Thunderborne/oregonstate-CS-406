@@ -54,10 +54,11 @@ while True:
     }
 
     # Store options
+    # Resets to 1 per level
     option_stats = {
         'attack': 1,
         'sneak': 1,
-        'o-magic': 1,
+        'magic': 1,
         'heal': 1,
         'talk': 1
     }
@@ -69,6 +70,22 @@ while True:
     level_one_turns = 0
     level_one_win = 0
     enemy1_health = 100
+
+    # Level One Dragon Attack
+    def dragon_attack():
+        """
+        Function rolls dice for the dragon's attack on the user.
+        :return: None.
+        """
+        # Sleep method used for text pauses
+        time.sleep(2)
+        print("The Dragon seethes with rage and attacks " + user_stats['char_name'] + "!")
+        enemy_attack_value = random.randint(0, 10)
+        time.sleep(2)
+        enemy_attack_txt = f" takes {enemy_attack_value} damage."
+        print(user_stats['char_name'] + enemy_attack_txt)
+        user_stats['char_health'] -= enemy_attack_value
+        return
 
     # Level One switch based on user selection
     def level_one_cases(user_selection, enemy1_health):
@@ -82,7 +99,8 @@ while True:
         # User selects Attack
         if user_selection == 1:
             print(user_stats['char_name'] + " attacks the Dragon!")
-            attack_value = random.randint(0, 20)
+            attack_value = random.randint(0, 16)
+            time.sleep(2)  # Added sleep method for a dramatic pause
             if attack_value == 0:
                 print(user_stats['char_name'] + " misses!")
             else:
@@ -92,33 +110,65 @@ while True:
             enemy1_health -= attack_value
             if enemy1_health < 0:
                 return enemy1_health
-            print("The Dragon seethes with rage and attacks " + user_stats['char_name'] +"!")
-            enemy_attack_value = random.randint(0, 10)
-            enemy_attack_txt = f" takes {enemy_attack_value} damage."
-            print(user_stats['char_name'] + enemy_attack_txt)
-            user_stats['char_health'] -= enemy_attack_value
+            # Call function so the dragon can return an attack
+            dragon_attack()
             return enemy1_health
         # User selects Run
         elif user_selection == 2:
             print(user_stats['char_name'] + " attempts to run away.")
             run_attempt_value = random.randint(0, 20)
             run_attempt_value += user_stats['char_evade']
+            time.sleep(2)
             if run_attempt_value >= 18:
                 print(user_stats['char_name'] + " has successfully escaped the Dragon!")
                 enemy1_health = 0
                 return enemy1_health
             print(user_stats['char_name'] + " fails to flee the Dragon.")
             print(user_stats['char_name'] + " is vulnerable from exhaustion.")
-            enemy_attack_value = random.randint(0, 10)
-            enemy_attack_txt = f" takes {enemy_attack_value} damage."
-            print(user_stats['char_name'] + enemy_attack_txt)
-            user_stats['char_health'] -= enemy_attack_value
+            # Dragon attacks failed runners
+            dragon_attack()
             return enemy1_health
         # User selects Magic
         elif user_selection == 3:
+            # Check if user already used magic this round
+            if option_stats['magic'] < 1:
+                print(user_stats['char_name'] + " is unable to conjure another spell without rest.")
+                return enemy1_health
+            # Determines if spell is successful. Arcanist will always be successful.
+            magic_chance = random.randint(0, 6) + user_stats['char_magic']
+            if magic_chance < 1:
+                print(user_stats['char_name'] + " hands begin to glow....")
+                time.sleep(2)
+                print("Dragon let's out a massive roar! " + user_stats['char_name'] +
+                      "'s spell casting breaks and fizzles out.")
+                # Set magic in option_stats to zero (prevents user from using magic again)
+                option_stats['magic'] = 0
+                return enemy1_health
+            print(user_stats['char_name'] + "'s hands begin to glow...")
+            time.sleep(2)
+            print("A large prismatic fire of magenta, purple, green, and gold forms from thin air.")
+            time.sleep(2)
+            print(user_stats['char_name'] + " hurls the intensely glowing fireball towards the Dragon")
+            time.sleep(1)
+            print("The prismatic fireball pierces through the beast's iron scales.")
+            time.sleep(1)
+            # Magic damage minimum and maximum are increased if user is an Arcanist + a +2 bonus on top
+            magic_attack_value = (random.randint(10 + user_stats['char_magic'], 20 + user_stats['char_magic'])
+                                  + user_stats['char_magic'])
+            enemy_magic_dmg_txt = f" takes {magic_attack_value} damage."
+            print("Dragon " + enemy_magic_dmg_txt)
+            # Set magic in option_stats to zero (prevents user from using magic again)
+            option_stats['magic'] = 0
+            enemy1_health -= magic_attack_value
+            if enemy1_health < 0:
+                return enemy1_health
+            # Call enemy attack function
+            dragon_attack()
             return enemy1_health
+        # User selects Sneak Attack
         elif user_selection == 4:
             return enemy1_health
+        # User selects Talk
         elif user_selection == 5:
             return enemy1_health
         else:
@@ -190,10 +240,10 @@ while True:
         print("Scenario 1: You see a dragon. \n")
         print("What do you do? \n")
         lvl_one_select = input("1. Attack \n"
-                               "2. Run (must roll 18+) \n"
-                               "3. Use offensive magic \n"
-                               "4. Sneak attack (must roll 10+) \n"
-                               "5. Talk to the dragon (must roll 18+) \n" +
+                               "2. Run (must roll 18+ (d20)) \n"
+                               "3. Use offensive magic (must roll 1+ (d6)) \n"
+                               "4. Sneak attack (must roll 10+ (d20) \n"
+                               "5. Talk to the dragon (must roll 19+ (d20)) \n" +
                                user_stats['char_name'] + " selects: ")
         if lvl_one_select.upper() == "QUIT" or lvl_one_select.upper() == "EXIT":
             print(goodbye_text)
