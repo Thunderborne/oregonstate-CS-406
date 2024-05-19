@@ -15,7 +15,17 @@ CS 406
 
 ### Change Log
 
-Version 0.0 - 04.29.2004 - Initial file structure of program uploaded 
+Version 0.2 - 05.18.2024
+* Fleshed out inner loops 
+
+Version 0.1 - 05.12.2024 
+* Created the foundational loops of program
+* Character creation active
+* First level choice active to demonstrate
+* Dice logic to level one
+
+Version 0.0 - 04.29.2024
+* Initial file structure of program uploaded 
 
 ### Program Structure
 | File        | Description |
@@ -33,3 +43,8 @@ Version 0.0 - 04.29.2004 - Initial file structure of program uploaded
 |------------|---------------------------------------------------------------------|
 | time       | This method will be used to delay read/write to the communication pipe |
 | random     | Random will allow program to roll a dice                            |
+
+### Wishlist for the Future of Project (Post-CS 406)
+- Make some encounters randomized
+- Change a couple of dictionaries into classes for cleaner code
+- Create additional paths for players to choose instead of a linear level design

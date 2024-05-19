@@ -116,7 +116,9 @@ while True:
         # User selects Run
         elif user_selection == 2:
             print(user_stats['char_name'] + " attempts to run away.")
-            run_attempt_value = random.randint(0, 20)
+            run_attempt_value = random.randint(1, 20)
+            print("---> " + user_stats['char_name'] + f" rolls a {run_attempt_value} "
+                                                      f"+{user_stats['char_evade']} out of 20.")
             run_attempt_value += user_stats['char_evade']
             time.sleep(2)
             if run_attempt_value >= 18:
@@ -135,8 +137,9 @@ while True:
                 print(user_stats['char_name'] + " is unable to conjure another spell without rest.")
                 return enemy1_health
             # Determines if spell is successful. Arcanist will always be successful.
-            magic_chance = random.randint(0, 6) + user_stats['char_magic']
-            if magic_chance < 1:
+            magic_chance = random.randint(1, 6) + user_stats['char_magic']
+            print("---> " + user_stats['char_name'] + f" rolls a {magic_chance} out of 6.")
+            if magic_chance < 2:
                 print(user_stats['char_name'] + " hands begin to glow....")
                 time.sleep(2)
                 print("Dragon let's out a massive roar! " + user_stats['char_name'] +
@@ -155,7 +158,7 @@ while True:
             # Magic damage minimum and maximum are increased if user is an Arcanist + a +2 bonus on top
             magic_attack_value = (random.randint(10 + user_stats['char_magic'], 20 + user_stats['char_magic'])
                                   + user_stats['char_magic'])
-            enemy_magic_dmg_txt = f" takes {magic_attack_value} damage."
+            enemy_magic_dmg_txt = f"takes {magic_attack_value} damage."
             print("Dragon " + enemy_magic_dmg_txt)
             # Set magic in option_stats to zero (prevents user from using magic again)
             option_stats['magic'] = 0
@@ -167,14 +170,91 @@ while True:
             return enemy1_health
         # User selects Sneak Attack
         elif user_selection == 4:
+            # Checks if Sneak Attack has already been used in the fight
+            if option_stats['sneak'] < 1 or level_one_turns > 1:
+                print(user_stats['char_name'] + " can no longer use a sneak attack in this fight.")
+                return enemy1_health
+            # Determines if sneak attack is successful. Operative has a +2 on top of the roll.
+            sneak_chance = random.randint(1, 20) + user_stats['char_evade']
+            print("---> " + user_stats['char_name'] + f" rolls a {sneak_chance} out of 20.")
+            # Unsuccessful sneak attack
+            if sneak_chance < 10:
+                print(user_stats['char_name'] + " attempts to blend into the shadows...")
+                time.sleep(2)
+                print("Dragon spots " + user_stats['char_name'] + " stealth technique.")
+                dragon_attack()
+                # Set sneak in option_stats to zero (prevents user from using sneak again)
+                option_stats['sneak'] = 0
+                return enemy1_health
+            print(user_stats['char_name'] + " attempts to blend into the shadows...")
+            time.sleep(1)
+            print("A shroud of darkness surrounds " + user_stats['char_name'] + ".")
+            time.sleep(1)
+            print(user_stats['char_name'] + " sneaks behind the Dragon and plunges a photon knife into "
+                                            "the beast's belly.")
+            time.sleep(1)
+            # Sneak damage minimum and maximum are increased if user is an Operative + a +2 bonus on top
+            sneak_attack_value = (random.randint(6 + user_stats['char_evade'], 12 + user_stats['char_evade'])
+                                  + user_stats['char_evade'])
+            enemy_sneak_dmg_txt = f" takes {sneak_attack_value} damage."
+            print("Dragon " + enemy_sneak_dmg_txt + " and is momentarily stunned.")
+            # Set sneak in option_stats to zero (prevents user from using sneak again)
+            option_stats['sneak'] = 0
+            enemy1_health -= sneak_attack_value
+            # Chance to double sneak stab. Must roll a 5+
+            if user_stats['char_evade'] >= 1:
+                double_sneak_chance = random.randint(1, 6)
+                print(user_stats['char_name'] + " attempts to sneak attack the Dragon a second time...")
+                time.sleep(2)
+                if double_sneak_chance < 5:
+                    print("But " + user_stats['char_name'] + " notices the Dragon begins to regain its "
+                                                             "consciousness and wisely pulls back.")
+                else:
+                    double_sneak_value = random.randint(1, 12)
+                    double_sneak_attack_txt = (f" causing {double_sneak_value} additional damage to "
+                                               f"the stunned beast.")
+                    print("There's still time...")
+                    time.sleep(1)
+                    print(user_stats['char_name'] + " quickly pulls out a photon blade and slashes "
+                                                    "the Dragon's tail" + double_sneak_attack_txt)
+                    enemy1_health -= double_sneak_value
             return enemy1_health
         # User selects Talk
         elif user_selection == 5:
+            if option_stats['talk'] < 1 or level_one_turns > 1:
+                print("The Dragon has no desire to speak. Choose another option.")
+                return enemy1_health
+            print(user_stats['char_name'] + " decides speaking to the beast is the best option.")
+            time.sleep(2)
+            print(user_stats['char_name'] + " slowly approaches the Dragon.")
+            time.sleep(2)
+            print("'I do not mean you any harm. I am just merely here to rescue a technohealer \n"
+                  "held captive at the tower's top,' " + user_stats['char_name'] + " said.")
+            time.sleep(5)
+            print("The Dragon looks uninterested in " + user_stats['char_name'] + "'s words.")
+            time.sleep(2)
+            talk_success_chance = random.randint(1, 20)
+            print("--> " + user_stats['char_name'] + f" rolls a {talk_success_chance} out of 20.")
+            if talk_success_chance < 19:
+                print("The Dragon seems insulted by " + user_stats['char_name'] +
+                      "'s audacity to confront her without fear. She now wants to fight...")
+                time.sleep(2)
+                print("The Dragon quickly swipes her massive claws at " + user_stats['char_name'] + ".")
+                time.sleep(2)
+                print(user_stats['char_name'] + " reacts, dodging most of the impact, but sustains 5 damage.")
+                user_stats['char_health'] -= 5
+                option_stats['talk'] = 0
+                return enemy1_health
+            print("She bears her teeth, but decides to ignore " + user_stats['char_name'] + ".")
+            time.sleep(2)
+            print(user_stats['char_name'] + " quickly realizes that it's the only chance "
+                                            "to walk by her unscathed.")
+            # Successful talk allows user to bypass the encounter
+            enemy1_health = 0
             return enemy1_health
         else:
             print("Please enter the appropriate number corresponding to the options.")
             return enemy1_health
-
 
 
     # Begin Game Loop
@@ -226,9 +306,13 @@ while True:
             if user_stats['char_class'] == 3:
                 user_stats['char_classname'] = "Arcanist"
                 user_stats['char_magic'] = 2
-            print(user_stats['char_name'] + " has chosen the " + user_stats['char_classname'] + ".")
-            print(user_stats['char_name'] + "'s stats are: \n")
-            print(user_stats)
+            print(user_stats['char_name'] + " has chosen the " + user_stats['char_classname'] + ".\n")
+            time.sleep(1)
+            print(user_stats['char_name'] + "'s stats are:")
+            print(f"Class: {user_stats['char_classname']} \n"
+                  f"Health: {user_stats['char_health']} \n"
+                  f"Attack: +{user_stats['char_attack']}, Evade: +{user_stats['char_evade']}, "
+                  f"Arcane: +{user_stats['char_magic']}")
             user_class_loop = False
 
     # Level One of Tower Loop
@@ -236,12 +320,30 @@ while True:
     TODO: Fill in the story scenario in UI phase
     TODO: Call the pipe for stats and dice roll
     """
+    time.sleep(3)
+    print("\n")
+    print("Scenario 1: You see a dragon. \n")
+    print("What do you do? \n")
+
     while level_one_loop is True:
-        print("Scenario 1: You see a dragon. \n")
-        print("What do you do? \n")
+        # Check if the Dragon is dead
+        if user_stats['char_health'] < 1:
+            print(user_stats['char_name'] + "'s health has reached 0. Game over.")
+            quit()
+        if enemy1_health < 1:
+            level_one_loop = False
+        time.sleep(3)
+        print("-------------------------------------------------------")
+        print(f"Turn Number: {level_one_turns}")
+        print(user_stats['char_name'] + f"'s Health: {user_stats['char_health']}")
+        print(f"Dragon's Health: {enemy1_health}")
+        print("-------------------------------------------------------")
+        time.sleep(2)
+        # User selection
+        print("Select number corresponding to your choice:")
         lvl_one_select = input("1. Attack \n"
                                "2. Run (must roll 18+ (d20)) \n"
-                               "3. Use offensive magic (must roll 1+ (d6)) \n"
+                               "3. Use offensive magic (must roll 2+ (d6)) \n"
                                "4. Sneak attack (must roll 10+ (d20) \n"
                                "5. Talk to the dragon (must roll 19+ (d20)) \n" +
                                user_stats['char_name'] + " selects: ")
@@ -254,7 +356,14 @@ while True:
         elif int(lvl_one_select) < 1 or int(lvl_one_select) > 5:
             print(selection_error)
             continue
-        #else:
+        else:
+            user_select = int(lvl_one_select)
+            level_one_cases(user_select, enemy1_health)
+
+
+    # Placeholder win condition and message
+    print("Congratulations")
+
         # Call the level one switch function in a loop here. It terminates when the enemy health is 0
         #elif level_one_win == 1:
             #level_one_loop = False
