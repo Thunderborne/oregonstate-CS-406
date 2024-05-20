@@ -87,7 +87,65 @@ while win_game < 1:
         'cyberblade': 1
     }
 
-    # Level One Data
+    # Introduction
+    # -------------------------------------------------------------
+    def story_intro():
+        """
+        Introduction to the story of the game. When called, prints
+        the story to the console
+        :return: None.
+        """
+        time.sleep(1)
+        print("--- INTRO -------------------------------------------------------------")
+        time.sleep(2)
+        print("Nexearth.")
+        time.sleep(4)
+        print("6 months ago...")
+        time.sleep(4)
+        print("a faceless entity known as The Dawn landed on Nexearth.\n")
+        time.sleep(4)
+        print("Scientists and arcane scholars code-named the extraterrestrial being ")
+        time.sleep(4)
+        print("'The Dawn' because witnesses who have claimed to have seen its face describe")
+        time.sleep(4)
+        print("it as a 'thousand eyes of brilliant light' and shortly after its sighting...")
+        time.sleep(4)
+        print("...they go insane.\n")
+        time.sleep(3)
+        print("Humans and the major allied races, the Radmarians and Elrans, fearing the ")
+        time.sleep(4)
+        print("destruction of all living things, agreed to send forth an army of synthetics ")
+        time.sleep(4)
+        print("to take down The Dawn.")
+        time.sleep(4)
+        print("But, this was a mistake.\n")
+        time.sleep(3)
+        print("The Dawn, you see, with its 'thousand eyes of brilliant light' blinked, ")
+        time.sleep(5)
+        print("causing every synthetic, every AI entity, to come under control of The Dawn.")
+        time.sleep(5)
+        print("This ransom of synthetics, this virus, cannot be stopped even by the most skilled ")
+        time.sleep(5)
+        print("arcane scholars or by the greatest of scientists.\n")
+        time.sleep(4)
+        print("And, The Dawn's influence over all synthetic entities continues to spread rapidly.")
+        time.sleep(5)
+        print("It is amassing a synthetic army that is, by every measure, unstoppable.\n")
+        time.sleep(5)
+        print("Only a techno-healer, one born from a cybernetic star, can undo this.")
+        time.sleep(4)
+        print("She can wrestle the influence of The Dawn.\n")
+        time.sleep(5)
+        print("The problem is, she is held captive in the prison tower of Noxcaelo, where \n"
+              "immensely powerful wardens and hideous beasts stand guard.\n")
+        time.sleep(9)
+        print("This is where you come in. I need you to free her. Free her, and free us from \n"
+              "The Dawn.\n")
+        time.sleep(4)
+        print("She is our last hope. You are our last hope. \n")
+        time.sleep(3)
+
+    # Level One
     # -------------------------------------------------------------
 
     # Level One Dragon Attack
@@ -112,7 +170,6 @@ while win_game < 1:
         Function acts a switch statement for the level one encounter. This function
         is called in a loop, which terminates when enemy1_health reaches below 1.
         :param user_selection: User choice
-        :param enemy1_health: value of current Dragon's health
         :return: enemy1_health
         """
         # User selects Attack
@@ -134,6 +191,13 @@ while win_game < 1:
                 print(user_stats['char_name'] + attack_txt)
             npc_stats['dragon'] -= attack_value
             if npc_stats['dragon'] < 0:
+                time.sleep(2)
+                print("The Dragon is overwhelmed by " + user_stats['char_name'] + "'s final slash.")
+                time.sleep(2)
+                print("The Dragon huffs. And slowly...")
+                time.sleep(3)
+                print("takes her last breath.")
+                time.sleep(2)
                 turn_counter['level_1'] += 1
                 turn_counter['total'] += 1
                 return
@@ -187,11 +251,11 @@ while win_game < 1:
             print(user_stats['char_name'] + "'s hands begin to glow...")
             time.sleep(2)
             print("A large prismatic fire of magenta, purple, green, and gold forms from thin air.")
-            time.sleep(2)
+            time.sleep(3)
             print(user_stats['char_name'] + " hurls the intensely glowing fireball towards the Dragon")
-            time.sleep(1)
+            time.sleep(3)
             print("The prismatic fireball pierces through the beast's iron scales.")
-            time.sleep(1)
+            time.sleep(2)
             # Magic damage minimum and maximum are increased if user is an Arcanist + a +2 bonus on top
             magic_attack_value = (random.randint(10 + user_stats['char_magic'], 20 + user_stats['char_magic'])
                                   + user_stats['char_magic'])
@@ -206,7 +270,8 @@ while win_game < 1:
                 time.sleep(2)
                 print("The Dragon huffs. And slowly...")
                 time.sleep(3)
-                print("it takes her last breath.")
+                print("takes her last breath.")
+                time.sleep(2)
                 turn_counter['level_1'] += 1
                 turn_counter['total'] += 1
                 return
@@ -314,6 +379,16 @@ while win_game < 1:
             print("Please enter the appropriate number corresponding to the options.")
             return
 
+    # Begin Title and Intro
+    # -------------------------------------------------------------
+    print("Arcane Punk Placeholder")
+    time.sleep(1)
+    start_press = input("Press Enter to Begin (type X and Enter to Skip Intro): \n")
+    time.sleep(1)
+    if start_press.upper() != "X":
+        story_intro()
+    time.sleep(1)
+
 
     # Begin Game Loop
     # -------------------------------------------------------------
@@ -418,7 +493,7 @@ while win_game < 1:
             # Message player that they have completed level
             if npc_stats['dragon'] < 1:
                 time.sleep(2)
-                print("An light platform drops down from.")
+                print("A light platform drops down from above.")
                 time.sleep(2)
                 print("It appears to be a magical lift.")
                 time.sleep(2)
