@@ -27,11 +27,19 @@ class_help_menu = """
 3. Arcanist - An arcanist has +2 to all spell casting
 """
 
+# Game win condition to terminate outer loop
+win_game = 0
+
 # Main Loop
-while True:
+while win_game < 1:
 
     # Turn counter
-    total_turns = 0
+    turn_counter = {
+        'total': 0,
+        'level_1': 0,
+        'level_2': 0,
+        'level_3': 0
+    }
 
     # Loop boolean to terminate loops
     name_loop = True
@@ -63,13 +71,24 @@ while True:
         'talk': 1
     }
 
+    # NPC and Enemies
+    npc_stats = {
+        'dragon': 100,
+        'enemy2': 100,
+        'enemy3': 100
+    }
+
+    # Gear / Equipment
+    char_gear = {
+        'lightbrand': 1,
+        'healbot': 1,
+        'staff': 1,
+        'shield': 1,
+        'cyberblade': 1
+    }
+
     # Level One Data
     # -------------------------------------------------------------
-
-    # Counters for Level One
-    level_one_turns = 0
-    level_one_win = 0
-    enemy1_health = 100
 
     # Level One Dragon Attack
     def dragon_attack():
@@ -88,7 +107,7 @@ while True:
         return
 
     # Level One switch based on user selection
-    def level_one_cases(user_selection, enemy1_health):
+    def level_one_cases(user_selection):
         """
         Function acts a switch statement for the level one encounter. This function
         is called in a loop, which terminates when enemy1_health reaches below 1.
@@ -104,41 +123,57 @@ while True:
             if attack_value == 0:
                 print(user_stats['char_name'] + " misses!")
             else:
+                # Crit check, must roll a 20
+                critical_strike_chance = random.randint(1, 20)
+                if critical_strike_chance == 20:
+                    print("Critical strike!")
+                    critical_damage = random.randint(6, 12)
+                    attack_value += critical_damage
                 attack_value += user_stats['char_attack']
                 attack_txt = f" attacks the Dragon for {attack_value}!"
                 print(user_stats['char_name'] + attack_txt)
-            enemy1_health -= attack_value
-            if enemy1_health < 0:
-                return enemy1_health
+            npc_stats['dragon'] -= attack_value
+            if npc_stats['dragon'] < 0:
+                turn_counter['level_1'] += 1
+                turn_counter['total'] += 1
+                return
             # Call function so the dragon can return an attack
             dragon_attack()
-            return enemy1_health
+            turn_counter['level_1'] += 1
+            turn_counter['total'] += 1
+            return
         # User selects Run
         elif user_selection == 2:
             print(user_stats['char_name'] + " attempts to run away.")
             run_attempt_value = random.randint(1, 20)
             print("---> " + user_stats['char_name'] + f" rolls a {run_attempt_value} "
-                                                      f"+{user_stats['char_evade']} out of 20.")
+                                                      f"out of 20 (+{user_stats['char_evade']} Evade).")
             run_attempt_value += user_stats['char_evade']
             time.sleep(2)
             if run_attempt_value >= 18:
                 print(user_stats['char_name'] + " has successfully escaped the Dragon!")
-                enemy1_health = 0
-                return enemy1_health
+                npc_stats['dragon'] = 0
+                turn_counter['level_1'] += 1
+                turn_counter['total'] += 1
+                return
             print(user_stats['char_name'] + " fails to flee the Dragon.")
             print(user_stats['char_name'] + " is vulnerable from exhaustion.")
             # Dragon attacks failed runners
             dragon_attack()
-            return enemy1_health
+            turn_counter['level_1'] += 1
+            turn_counter['total'] += 1
+            return
         # User selects Magic
         elif user_selection == 3:
             # Check if user already used magic this round
             if option_stats['magic'] < 1:
                 print(user_stats['char_name'] + " is unable to conjure another spell without rest.")
-                return enemy1_health
+                return
             # Determines if spell is successful. Arcanist will always be successful.
-            magic_chance = random.randint(1, 6) + user_stats['char_magic']
-            print("---> " + user_stats['char_name'] + f" rolls a {magic_chance} out of 6.")
+            magic_chance = random.randint(1, 6)
+            print("---> " + user_stats['char_name'] + f" rolls a {magic_chance} out of "
+                                                      f"6 (+{user_stats['char_magic']} Arcane).")
+            magic_chance += user_stats['char_magic']
             if magic_chance < 2:
                 print(user_stats['char_name'] + " hands begin to glow....")
                 time.sleep(2)
@@ -146,7 +181,9 @@ while True:
                       "'s spell casting breaks and fizzles out.")
                 # Set magic in option_stats to zero (prevents user from using magic again)
                 option_stats['magic'] = 0
-                return enemy1_health
+                turn_counter['level_1'] += 1
+                turn_counter['total'] += 1
+                return
             print(user_stats['char_name'] + "'s hands begin to glow...")
             time.sleep(2)
             print("A large prismatic fire of magenta, purple, green, and gold forms from thin air.")
@@ -162,21 +199,33 @@ while True:
             print("Dragon " + enemy_magic_dmg_txt)
             # Set magic in option_stats to zero (prevents user from using magic again)
             option_stats['magic'] = 0
-            enemy1_health -= magic_attack_value
-            if enemy1_health < 0:
-                return enemy1_health
+            npc_stats['dragon'] -= magic_attack_value
+            if npc_stats['dragon'] < 0:
+                time.sleep(2)
+                print("Dragon writhes and slowly collapses from the intense heat of the fire.")
+                time.sleep(2)
+                print("The Dragon huffs. And slowly...")
+                time.sleep(3)
+                print("it takes her last breath.")
+                turn_counter['level_1'] += 1
+                turn_counter['total'] += 1
+                return
             # Call enemy attack function
             dragon_attack()
-            return enemy1_health
+            turn_counter['level_1'] += 1
+            turn_counter['total'] += 1
+            return
         # User selects Sneak Attack
         elif user_selection == 4:
             # Checks if Sneak Attack has already been used in the fight
-            if option_stats['sneak'] < 1 or level_one_turns > 1:
+            if option_stats['sneak'] < 1 or turn_counter['level_1'] > 0:
                 print(user_stats['char_name'] + " can no longer use a sneak attack in this fight.")
-                return enemy1_health
+                return
             # Determines if sneak attack is successful. Operative has a +2 on top of the roll.
-            sneak_chance = random.randint(1, 20) + user_stats['char_evade']
-            print("---> " + user_stats['char_name'] + f" rolls a {sneak_chance} out of 20.")
+            sneak_chance = random.randint(1, 20)
+            print("---> " + user_stats['char_name'] + f" rolls a {sneak_chance} "
+                                                      f"out of 20 (+{user_stats['char_evade']} Evade).")
+            sneak_chance += user_stats['char_evade']
             # Unsuccessful sneak attack
             if sneak_chance < 10:
                 print(user_stats['char_name'] + " attempts to blend into the shadows...")
@@ -185,7 +234,9 @@ while True:
                 dragon_attack()
                 # Set sneak in option_stats to zero (prevents user from using sneak again)
                 option_stats['sneak'] = 0
-                return enemy1_health
+                turn_counter['level_1'] += 1
+                turn_counter['total'] += 1
+                return
             print(user_stats['char_name'] + " attempts to blend into the shadows...")
             time.sleep(1)
             print("A shroud of darkness surrounds " + user_stats['char_name'] + ".")
@@ -196,11 +247,12 @@ while True:
             # Sneak damage minimum and maximum are increased if user is an Operative + a +2 bonus on top
             sneak_attack_value = (random.randint(6 + user_stats['char_evade'], 12 + user_stats['char_evade'])
                                   + user_stats['char_evade'])
-            enemy_sneak_dmg_txt = f" takes {sneak_attack_value} damage."
-            print("Dragon " + enemy_sneak_dmg_txt + " and is momentarily stunned.")
+            enemy_sneak_dmg_txt = f" takes {sneak_attack_value} damage"
+            print("Dragon" + enemy_sneak_dmg_txt + " and is momentarily stunned.")
             # Set sneak in option_stats to zero (prevents user from using sneak again)
             option_stats['sneak'] = 0
-            enemy1_health -= sneak_attack_value
+            npc_stats['dragon'] -= sneak_attack_value
+            time.sleep(3)
             # Chance to double sneak stab. Must roll a 5+
             if user_stats['char_evade'] >= 1:
                 double_sneak_chance = random.randint(1, 6)
@@ -217,13 +269,15 @@ while True:
                     time.sleep(1)
                     print(user_stats['char_name'] + " quickly pulls out a photon blade and slashes "
                                                     "the Dragon's tail" + double_sneak_attack_txt)
-                    enemy1_health -= double_sneak_value
-            return enemy1_health
+                    npc_stats['dragon'] -= double_sneak_value
+            turn_counter['level_1'] += 1
+            turn_counter['total'] += 1
+            return
         # User selects Talk
         elif user_selection == 5:
-            if option_stats['talk'] < 1 or level_one_turns > 1:
+            if option_stats['talk'] < 1 or turn_counter['level_1'] > 0:
                 print("The Dragon has no desire to speak. Choose another option.")
-                return enemy1_health
+                return
             print(user_stats['char_name'] + " decides speaking to the beast is the best option.")
             time.sleep(2)
             print(user_stats['char_name'] + " slowly approaches the Dragon.")
@@ -244,17 +298,21 @@ while True:
                 print(user_stats['char_name'] + " reacts, dodging most of the impact, but sustains 5 damage.")
                 user_stats['char_health'] -= 5
                 option_stats['talk'] = 0
-                return enemy1_health
+                turn_counter['level_1'] += 1
+                turn_counter['total'] += 1
+                return
             print("She bears her teeth, but decides to ignore " + user_stats['char_name'] + ".")
             time.sleep(2)
             print(user_stats['char_name'] + " quickly realizes that it's the only chance "
                                             "to walk by her unscathed.")
             # Successful talk allows user to bypass the encounter
-            enemy1_health = 0
-            return enemy1_health
+            npc_stats['dragon'] = 0
+            turn_counter['level_1'] += 1
+            turn_counter['total'] += 1
+            return
         else:
             print("Please enter the appropriate number corresponding to the options.")
-            return enemy1_health
+            return
 
 
     # Begin Game Loop
@@ -325,18 +383,16 @@ while True:
     print("Scenario 1: You see a dragon. \n")
     print("What do you do? \n")
 
-    while level_one_loop is True:
+    while npc_stats['dragon'] > 0:
         # Check if the Dragon is dead
         if user_stats['char_health'] < 1:
             print(user_stats['char_name'] + "'s health has reached 0. Game over.")
             quit()
-        if enemy1_health < 1:
-            level_one_loop = False
         time.sleep(3)
         print("-------------------------------------------------------")
-        print(f"Turn Number: {level_one_turns}")
+        print(f"Turn Number: {turn_counter['total']}")
         print(user_stats['char_name'] + f"'s Health: {user_stats['char_health']}")
-        print(f"Dragon's Health: {enemy1_health}")
+        print(f"Dragon's Health: {npc_stats['dragon']}")
         print("-------------------------------------------------------")
         time.sleep(2)
         # User selection
@@ -358,15 +414,30 @@ while True:
             continue
         else:
             user_select = int(lvl_one_select)
-            level_one_cases(user_select, enemy1_health)
+            level_one_cases(user_select)
+            # Message player that they have completed level
+            if npc_stats['dragon'] < 1:
+                time.sleep(2)
+                print("An light platform drops down from.")
+                time.sleep(2)
+                print("It appears to be a magical lift.")
+                time.sleep(2)
+                print(user_stats['char_name'] + " quickly hops on.")
+                time.sleep(1)
+                print("-------------------------------------------------------")
+                print(user_stats['char_name'] + " has passed level one!")
+                print(f"Health: {user_stats['char_health']}")
+                print(f"Number of Turns in Level 1: {turn_counter['level_1']}")
+                print("-------------------------------------------------------")
 
 
     # Placeholder win condition and message
     print("Congratulations")
 
-        # Call the level one switch function in a loop here. It terminates when the enemy health is 0
-        #elif level_one_win == 1:
-            #level_one_loop = False
+    # Print summary of stats / number of turns
+
+    # Terminates Outer loop
+    win_game = 1
 
 
 

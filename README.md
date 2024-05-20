@@ -15,6 +15,11 @@ CS 406
 
 ### Change Log
 
+Version 0.3 - 05.19.2024
+* Fixed loops that were not closing
+* Fixed counters not decrementing
+* Added more UI elements for UI phase
+
 Version 0.2 - 05.18.2024
 * Fleshed out inner loops 
 
