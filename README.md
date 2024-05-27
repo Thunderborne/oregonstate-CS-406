@@ -18,9 +18,10 @@ CS 406
 Version 0.5 - 05.26.2024
 * Added ASCII for title (UI Phase)
 * Added ASCII for NPC (UI Phase)
-* Added key input requirement to advance post level summary
-* Added intro dialogue for level two
-* Added dictionaries for items and branching dialogue in level two
+* Added key input requirement to advance post level summary (UI Phase)
+* Added intro dialogue for level two (UI Phase)
+* Added dictionaries for items and branching dialogue in level two (UI Phase)
+* Added End Game player stat summary (UI Phase)
 
 Version 0.4 - 05.20.2024
 * Added Introduction Story for UI phase

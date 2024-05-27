@@ -156,6 +156,20 @@ while win_game < 1:
         'talk': 1
     }
 
+    # Summary Stats data for end game
+    player_choices_stats = {
+        'attack_tries': 0,
+        'attack_success': 0,
+        'magic_tries': 0,
+        'magic_success': 0,
+        'sneak_tries': 0,
+        'sneak_success': 0,
+        'talk_tries': 0,
+        'talk_success': 0,
+        'run_tries': 0,
+        'run_success': 0
+    }
+
     # NPC and Enemies
     npc_stats = {
         'dragon': 100,
@@ -190,6 +204,20 @@ while win_game < 1:
         'neutral': 0,
         'rude': 0
     }
+
+    summary_stats = f"""
+    Stat Summary
+    -------------------------------------------------------
+    Total Number of Turns: {turn_counter['total']}
+    
+    -- Success Rate --
+    Attacks: {player_choices_stats['attack_success']} out of {player_choices_stats['attack_tries']}
+    Magic: {player_choices_stats['magic_success']} out of {player_choices_stats['magic_tries']}
+    Sneak Attack: {player_choices_stats['sneak_success']} out of {player_choices_stats['sneak_tries']}
+    Escapes: {player_choices_stats['run_success']} out of {player_choices_stats['run_tries']}
+    Talk: {player_choices_stats['talk_success']} out of {player_choices_stats['talk_tries']}
+    -------------------------------------------------------
+    """
 
     # Introduction
     # -------------------------------------------------------------
@@ -249,7 +277,7 @@ while win_game < 1:
         print("She is our last hope. You are our last hope. \n")
         time.sleep(3)
 
-    # Level One
+    # Level One Functions
     # -------------------------------------------------------------
 
     # Level One Dragon Attack
@@ -281,6 +309,7 @@ while win_game < 1:
             print(user_stats['char_name'] + " attacks the Dragon!")
             attack_value = random.randint(0, 16)
             time.sleep(2)  # Added sleep method for a dramatic pause
+            player_choices_stats['attack_tries'] += 1
             if attack_value == 0:
                 print(user_stats['char_name'] + " misses!")
             else:
@@ -293,6 +322,7 @@ while win_game < 1:
                 attack_value += user_stats['char_attack']
                 attack_txt = f" attacks the Dragon for {attack_value}!"
                 print(user_stats['char_name'] + attack_txt)
+                player_choices_stats['attack_success'] += 1
             npc_stats['dragon'] -= attack_value
             if npc_stats['dragon'] < 0:
                 time.sleep(2)
@@ -318,12 +348,14 @@ while win_game < 1:
             print("---> " + user_stats['char_name'] + f" rolls a {run_attempt_value} "
                                                       f"out of 20 (+{user_stats['char_evade']} Evade).")
             run_attempt_value += user_stats['char_evade']
+            player_choices_stats['run_tries'] += 1
             time.sleep(2)
             if run_attempt_value >= 18:
                 print(user_stats['char_name'] + " has successfully escaped the Dragon!")
                 npc_stats['dragon'] = 0
                 turn_counter['level_1'] += 1
                 turn_counter['total'] += 1
+                player_choices_stats['run_success'] += 1
                 return
             print(user_stats['char_name'] + " fails to flee the Dragon.")
             print(user_stats['char_name'] + " is vulnerable from exhaustion.")
@@ -343,6 +375,7 @@ while win_game < 1:
             print("---> " + user_stats['char_name'] + f" rolls a {magic_chance} out of "
                                                       f"6 (+{user_stats['char_magic']} Arcane).")
             magic_chance += user_stats['char_magic']
+            player_choices_stats['magic_tries'] += 1
             if magic_chance < 2:
                 print(user_stats['char_name'] + " hands begin to glow....")
                 time.sleep(2)
@@ -369,6 +402,7 @@ while win_game < 1:
             # Set magic in option_stats to zero (prevents user from using magic again)
             option_stats['magic'] = 0
             npc_stats['dragon'] -= magic_attack_value
+            player_choices_stats['magic_success'] += 1
             if npc_stats['dragon'] < 0:
                 time.sleep(2)
                 print("Dragon writhes and slowly collapses from the intense heat of the fire.")
@@ -397,6 +431,7 @@ while win_game < 1:
             print("---> " + user_stats['char_name'] + f" rolls a {sneak_chance} "
                                                       f"out of 20 (+{user_stats['char_evade']} Evade).")
             sneak_chance += user_stats['char_evade']
+            player_choices_stats['sneak_tries'] += 1
             # Unsuccessful sneak attack
             if sneak_chance < 10:
                 print(user_stats['char_name'] + " attempts to blend into the shadows...")
@@ -423,6 +458,7 @@ while win_game < 1:
             # Set sneak in option_stats to zero (prevents user from using sneak again)
             option_stats['sneak'] = 0
             npc_stats['dragon'] -= sneak_attack_value
+            player_choices_stats['sneak_success'] += 1
             time.sleep(3)
             # Chance to double sneak stab. Must roll a 5+
             if user_stats['char_evade'] >= 1:
@@ -460,6 +496,7 @@ while win_game < 1:
             time.sleep(2)
             talk_success_chance = random.randint(1, 20)
             print("--> " + user_stats['char_name'] + f" rolls a {talk_success_chance} out of 20.")
+            player_choices_stats['talk_tries'] += 1
             if talk_success_chance < 19:
                 print("The Dragon seems insulted by " + user_stats['char_name'] +
                       "'s audacity to confront her without fear. She now wants to fight...")
@@ -481,10 +518,15 @@ while win_game < 1:
             turn_counter['level_1'] += 1
             turn_counter['total'] += 1
             dragon_defeat['talk'] = 1
+            player_choices_stats['talk_success'] += 1
             return
         else:
             print("Please enter the appropriate number corresponding to the options.")
             return
+
+    # Level Two Functions
+    # -------------------------------------------------------------
+
 
     # Begin Title and Intro
     # -------------------------------------------------------------
@@ -581,7 +623,9 @@ while win_game < 1:
     while npc_stats['dragon'] > 0:
         # Check if the Dragon is dead
         if user_stats['char_health'] < 1:
-            print(user_stats['char_name'] + "'s health has reached 0. Game over.")
+            print(user_stats['char_name'] + "'s health has reached 0. Game over.\n")
+            print(summary_stats)
+            print("Thank you for playing!")
             quit()
         time.sleep(2)
         print("-------------------------------------------------------")
@@ -669,9 +713,10 @@ while win_game < 1:
 
 
     # Placeholder win condition and message
-    print("Congratulations")
+    print("Congratulations you won the game!\n")
 
     # Print summary of stats / number of turns
+    print(summary_stats)
 
     # Terminates Outer loop
     win_game = 1
