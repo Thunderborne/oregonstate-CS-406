@@ -15,6 +15,13 @@ CS 406
 
 ### Change Log
 
+Version 0.5 - 05.26.2024
+* Added ASCII for title (UI Phase)
+* Added ASCII for NPC (UI Phase)
+* Added key input requirement to advance post level summary
+* Added intro dialogue for level two
+* Added dictionaries for items and branching dialogue in level two
+
 Version 0.4 - 05.20.2024
 * Added Introduction Story for UI phase
 * Added a Skip Intro
@@ -58,3 +65,4 @@ Version 0.0 - 04.29.2024
 - Make some encounters randomized
 - Change a couple of dictionaries into classes for cleaner code
 - Create additional paths for players to choose instead of a linear level design
+- Create a save state
